@@ -2,171 +2,574 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Sóc Nâu Review</title>
 
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
   <style>
-    *{box-sizing:border-box}
+    *{
+      box-sizing:border-box;
+    }
+
     body{
       margin:0;
       background:#0b0b0f;
-      color:white;
+      color:#fff;
       font-family:Arial,sans-serif;
-      padding-bottom:85px;
+      padding-bottom:90px;
     }
+
     header{
       padding:22px 18px 12px;
     }
+
     .brand{
-      font-size:26px;
+      font-size:27px;
       font-weight:800;
     }
-    .brand span{color:#f5b942}
+
+    .brand span{
+      color:#f5b942;
+    }
+
     .search{
       width:100%;
       margin-top:16px;
       padding:14px 16px;
-      border:0;
+      border:1px solid #333;
       border-radius:14px;
-      background:#1b1b22;
-      color:white;
+      background:#17171d;
+      color:#fff;
       font-size:16px;
+      outline:none;
     }
-    section{padding:8px 18px}
-    h2{font-size:19px;margin:16px 0 12px}
+
+    .container{
+      padding:0 16px;
+    }
+
     .hero{
-      height:190px;
-      border-radius:18px;
-      padding:20px;
+      margin-top:10px;
+      min-height:190px;
+      border-radius:22px;
+      padding:24px;
       display:flex;
       flex-direction:column;
       justify-content:flex-end;
-      background:linear-gradient(135deg,#5b3016,#181821);
+      background:
+        linear-gradient(0deg,rgba(0,0,0,.75),rgba(0,0,0,.10)),
+        linear-gradient(135deg,#6d3820,#25191b);
+      cursor:pointer;
     }
-    .hero h1{margin:0;font-size:24px}
-    .hero p{margin:7px 0 0;color:#ddd}
+
+    .hero-tag{
+      color:#f5b942;
+      font-size:13px;
+      font-weight:bold;
+      margin-bottom:8px;
+    }
+
+    .hero h1{
+      margin:0;
+      font-size:27px;
+    }
+
+    .hero p{
+      margin:8px 0 0;
+      color:#ddd;
+    }
+
+    h2{
+      margin:27px 0 15px;
+      font-size:21px;
+    }
+
     .grid{
       display:grid;
-      grid-template-columns:repeat(2,1fr);
-      gap:12px;
+      grid-template-columns:1fr 1fr;
+      gap:15px;
     }
-    .movie{
-      background:#18181f;
-      border-radius:15px;
+
+    .card{
+      background:#17171d;
+      border-radius:18px;
       overflow:hidden;
+      cursor:pointer;
     }
+
     .poster{
-      height:180px;
+      height:190px;
       display:flex;
       align-items:center;
       justify-content:center;
-      font-size:45px;
-      background:linear-gradient(145deg,#37211b,#27283d);
+      font-size:48px;
+      background:linear-gradient(145deg,#4a2925,#20202d);
     }
-    .info{padding:11px}
-    .info b{font-size:14px}
-    .info small{
-      display:block;
-      margin-top:6px;
-      color:#aaa;
+
+    .card-info{
+      padding:13px;
     }
-    nav{
+
+    .card-title{
+      font-size:16px;
+      font-weight:700;
+      line-height:1.3;
+    }
+
+    .episode{
+      color:#999;
+      margin-top:7px;
+      font-size:14px;
+    }
+
+    .detail{
+      display:none;
+    }
+
+    .back{
+      display:inline-block;
+      margin:18px 0 10px;
+      color:#f5b942;
+      font-weight:bold;
+      cursor:pointer;
+    }
+
+    .detail-poster{
+      height:260px;
+      border-radius:22px;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      font-size:75px;
+      background:linear-gradient(145deg,#5b3026,#20202d);
+    }
+
+    .detail h1{
+      font-size:27px;
+      margin-bottom:8px;
+    }
+
+    .tags{
+      color:#f5b942;
+      font-size:14px;
+      margin-bottom:15px;
+    }
+
+    .description{
+      color:#bbb;
+      line-height:1.55;
+    }
+
+    .episode-list{
+      margin-top:20px;
+    }
+
+    .episode-button{
+      width:100%;
+      border:0;
+      margin-bottom:10px;
+      padding:16px;
+      border-radius:13px;
+      background:#1d1d24;
+      color:#fff;
+      font-size:16px;
+      text-align:left;
+      cursor:pointer;
+    }
+
+    .episode-button span{
+      float:right;
+      color:#f5b942;
+    }
+
+    .bottom-nav{
       position:fixed;
-      bottom:0;
       left:0;
       right:0;
-      height:72px;
+      bottom:0;
+      height:76px;
+      padding-bottom:env(safe-area-inset-bottom);
       background:#15151b;
+      border-top:1px solid #292932;
       display:flex;
       justify-content:space-around;
       align-items:center;
-      border-top:1px solid #292932;
+      z-index:100;
     }
-    nav div{
+
+    .nav-item{
+      text-align:center;
+      color:#999;
+      font-size:12px;
+      cursor:pointer;
+      width:25%;
+    }
+
+    .nav-icon{
+      display:block;
+      font-size:22px;
+      margin-bottom:5px;
+    }
+
+    .nav-item.active{
+      color:#f5b942;
+    }
+
+    .empty-page{
+      display:none;
+      padding:45px 20px;
       text-align:center;
       color:#aaa;
-      font-size:12px;
-    }
-    nav .active{color:#f5b942}
-    nav b{
-      display:block;
-      font-size:21px;
-      margin-bottom:4px;
     }
   </style>
 </head>
 
 <body>
 
-<header>
-  <div class="brand">🐿️ SÓC NÂU <span>REVIEW</span></div>
-  <input class="search" placeholder="🔎 Tìm kiếm phim...">
-</header>
+  <header id="header">
+    <div class="brand">SÓC NÂU <span>REVIEW</span></div>
 
-<section>
-  <h2>🔥 Phim nổi bật</h2>
+    <input
+      class="search"
+      id="search"
+      type="text"
+      placeholder="🔎 Tìm kiếm phim..."
+      oninput="searchMovies()"
+    >
+  </header>
 
-  <div class="hero">
-    <h1>Xuyên Về Thập Niên 60</h1>
-    <p>Sở hữu không gian thần bí</p>
-  </div>
-</section>
+  <main class="container">
 
-<section>
-  <h2>🆕 Mới cập nhật</h2>
+    <!-- TRANG CHỦ -->
+    <section id="home">
 
-  <div class="grid">
-
-    <div class="movie">
-      <div class="poster">🎬</div>
-      <div class="info">
-        <b>Xuyên Về Năm 1960</b>
-        <small>Tập 06</small>
+      <div class="hero" onclick="openMovie('1960')">
+        <div class="hero-tag">🔥 PHIM NỔI BẬT</div>
+        <h1>Xuyên Về Thập Niên 60</h1>
+        <p>Sở hữu không gian thần bí</p>
       </div>
+
+      <h2>🆕 Mới cập nhật</h2>
+
+      <div class="grid" id="movieGrid">
+
+        <div class="card movie"
+             data-name="xuyên về năm 1960"
+             onclick="openMovie('1960')">
+          <div class="poster">🎬</div>
+          <div class="card-info">
+            <div class="card-title">Xuyên Về Năm 1960</div>
+            <div class="episode">Tập 06</div>
+          </div>
+        </div>
+
+        <div class="card movie"
+             data-name="không giấu thân phận"
+             onclick="openMovie('identity')">
+          <div class="poster">🎞️</div>
+          <div class="card-info">
+            <div class="card-title">Không Giấu Thân Phận</div>
+            <div class="episode">Tập 07</div>
+          </div>
+        </div>
+
+        <div class="card movie"
+             data-name="định mệnh trở lại"
+             onclick="openMovie('destiny')">
+          <div class="poster">🍿</div>
+          <div class="card-info">
+            <div class="card-title">Định Mệnh Trở Lại</div>
+            <div class="episode">Tập 03</div>
+          </div>
+        </div>
+
+        <div class="card movie"
+             data-name="trở lại đỉnh cao"
+             onclick="openMovie('peak')">
+          <div class="poster">👑</div>
+          <div class="card-info">
+            <div class="card-title">Trở Lại Đỉnh Cao</div>
+            <div class="episode">12 tập</div>
+          </div>
+        </div>
+
+      </div>
+
+      <h2>🎥 Phim bộ dành cho bạn</h2>
+
+      <div class="grid">
+
+        <div class="card movie"
+             data-name="lời hứa năm xưa"
+             onclick="openMovie('promise')">
+          <div class="poster">❤️</div>
+          <div class="card-info">
+            <div class="card-title">Lời Hứa Năm Xưa</div>
+            <div class="episode">08 tập</div>
+          </div>
+        </div>
+
+        <div class="card movie"
+             data-name="không gian vô hạn"
+             onclick="openMovie('space')">
+          <div class="poster">✨</div>
+          <div class="card-info">
+            <div class="card-title">Không Gian Vô Hạn</div>
+            <div class="episode">10 tập</div>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- CHI TIẾT PHIM -->
+    <section class="detail" id="detail">
+
+      <div class="back" onclick="goHome()">
+        ← Quay lại
+      </div>
+
+      <div class="detail-poster" id="detailIcon">
+        🎬
+      </div>
+
+      <h1 id="detailTitle">Tên phim</h1>
+
+      <div class="tags">
+        Phim bộ • Review • Sóc Nâu
+      </div>
+
+      <p class="description" id="detailDescription">
+        Nội dung phim.
+      </p>
+
+      <h2>Danh sách tập</h2>
+
+      <div class="episode-list" id="episodeList"></div>
+
+    </section>
+
+    <section class="empty-page" id="explore">
+      <h2>🔎 Khám phá</h2>
+      <p>Kho phim Sóc Nâu sẽ được cập nhật tại đây.</p>
+    </section>
+
+    <section class="empty-page" id="community">
+      <h2>♟️ Cộng đồng</h2>
+      <p>Cộng đồng dành cho những người yêu thích Sóc Nâu Review.</p>
+    </section>
+
+    <section class="empty-page" id="profile">
+      <h2>👤 Cá nhân</h2>
+      <p>Thông tin tài khoản Telegram của bạn.</p>
+    </section>
+
+  </main>
+
+  <nav class="bottom-nav">
+
+    <div class="nav-item active"
+         id="navHome"
+         onclick="showPage('home')">
+      <span class="nav-icon">⌂</span>
+      Trang chủ
     </div>
 
-    <div class="movie">
-      <div class="poster">🎞️</div>
-      <div class="info">
-        <b>Không Giấu Thân Phận</b>
-        <small>Tập 07</small>
-      </div>
+    <div class="nav-item"
+         id="navExplore"
+         onclick="showPage('explore')">
+      <span class="nav-icon">⌕</span>
+      Khám phá
     </div>
 
-    <div class="movie">
-      <div class="poster">🍿</div>
-      <div class="info">
-        <b>Định Mệnh Trở Lại</b>
-        <small>Tập 03</small>
-      </div>
+    <div class="nav-item"
+         id="navCommunity"
+         onclick="showPage('community')">
+      <span class="nav-icon">♟</span>
+      Cộng đồng
     </div>
 
-    <div class="movie">
-      <div class="poster">👑</div>
-      <div class="info">
-        <b>Trở Lại Đỉnh Cao</b>
-        <small>12 tập</small>
-      </div>
+    <div class="nav-item"
+         id="navProfile"
+         onclick="showPage('profile')">
+      <span class="nav-icon">●</span>
+      Cá nhân
     </div>
 
-  </div>
-</section>
-
-<nav>
-  <div class="active"><b>⌂</b>Trang chủ</div>
-  <div><b>⌕</b>Khám phá</div>
-  <div><b>♟</b>Cộng đồng</div>
-  <div><b>●</b>Cá nhân</div>
-</nav>
+  </nav>
 
 <script>
-  const tg = window.Telegram?.WebApp;
-  if (tg) {
-    tg.ready();
-    tg.expand();
+
+const movies = {
+
+  "1960":{
+    title:"Xuyên Về Năm 1960",
+    icon:"🎬",
+    description:
+      "Một hành trình trở về thập niên 60 cùng không gian thần bí, mở ra một cuộc sống hoàn toàn mới.",
+    episodes:6
+  },
+
+  "identity":{
+    title:"Không Giấu Thân Phận",
+    icon:"🎞️",
+    description:
+      "Khi bí mật thân phận không thể tiếp tục che giấu, cuộc sống của nhân vật chính bắt đầu thay đổi.",
+    episodes:7
+  },
+
+  "destiny":{
+    title:"Định Mệnh Trở Lại",
+    icon:"🍿",
+    description:
+      "Một câu chuyện về cơ hội thứ hai, những lựa chọn và sự thay đổi của số phận.",
+    episodes:3
+  },
+
+  "peak":{
+    title:"Trở Lại Đỉnh Cao",
+    icon:"👑",
+    description:
+      "Sau những biến cố, nhân vật chính bắt đầu hành trình trở lại vị trí đỉnh cao.",
+    episodes:12
+  },
+
+  "promise":{
+    title:"Lời Hứa Năm Xưa",
+    icon:"❤️",
+    description:
+      "Một lời hứa từ quá khứ dẫn đến những cuộc gặp gỡ và thay đổi trong hiện tại.",
+    episodes:8
+  },
+
+  "space":{
+    title:"Không Gian Vô Hạn",
+    icon:"✨",
+    description:
+      "Sở hữu một không gian đặc biệt mở ra vô số cơ hội và những cuộc phiêu lưu mới.",
+    episodes:10
   }
+
+};
+
+
+function openMovie(id){
+
+  const movie = movies[id];
+
+  document.getElementById("header").style.display="none";
+  document.getElementById("home").style.display="none";
+  document.getElementById("explore").style.display="none";
+  document.getElementById("community").style.display="none";
+  document.getElementById("profile").style.display="none";
+
+  document.getElementById("detail").style.display="block";
+
+  document.getElementById("detailTitle").innerText=movie.title;
+  document.getElementById("detailIcon").innerText=movie.icon;
+  document.getElementById("detailDescription").innerText=movie.description;
+
+  const list=document.getElementById("episodeList");
+
+  list.innerHTML="";
+
+  for(let i=1;i<=movie.episodes;i++){
+
+    const number=String(i).padStart(2,"0");
+
+    const button=document.createElement("button");
+
+    button.className="episode-button";
+
+    button.innerHTML=
+      "Tập "+number+
+      "<span>▶ Xem phim</span>";
+
+    button.onclick=function(){
+      alert("Tập "+number+" sẽ được gắn video ở bước tiếp theo.");
+    };
+
+    list.appendChild(button);
+  }
+
+  window.scrollTo(0,0);
+}
+
+
+function goHome(){
+  document.getElementById("detail").style.display="none";
+  showPage("home");
+}
+
+
+function showPage(page){
+
+  document.getElementById("header").style.display =
+    page==="home" ? "block" : "none";
+
+  document.getElementById("home").style.display =
+    page==="home" ? "block" : "none";
+
+  document.getElementById("detail").style.display="none";
+
+  document.getElementById("explore").style.display =
+    page==="explore" ? "block" : "none";
+
+  document.getElementById("community").style.display =
+    page==="community" ? "block" : "none";
+
+  document.getElementById("profile").style.display =
+    page==="profile" ? "block" : "none";
+
+
+  document.querySelectorAll(".nav-item")
+    .forEach(item=>item.classList.remove("active"));
+
+  if(page==="home")
+    document.getElementById("navHome").classList.add("active");
+
+  if(page==="explore")
+    document.getElementById("navExplore").classList.add("active");
+
+  if(page==="community")
+    document.getElementById("navCommunity").classList.add("active");
+
+  if(page==="profile")
+    document.getElementById("navProfile").classList.add("active");
+
+  window.scrollTo(0,0);
+}
+
+
+function searchMovies(){
+
+  const value =
+    document.getElementById("search")
+    .value
+    .toLowerCase()
+    .trim();
+
+  document.querySelectorAll(".movie")
+    .forEach(movie=>{
+
+      const name=movie.dataset.name;
+
+      movie.style.display =
+        name.includes(value) ? "block" : "none";
+
+    });
+}
+
+
+if(window.Telegram && Telegram.WebApp){
+
+  Telegram.WebApp.ready();
+  Telegram.WebApp.expand();
+
+}
+
 </script>
 
 </body>
